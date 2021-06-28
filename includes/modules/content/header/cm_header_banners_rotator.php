@@ -27,15 +27,17 @@
       $content_width = MODULE_CONTENT_HEADER_BANNERS_ROTATOR_CONTENT_WIDTH;
           
       if (tep_not_null(MODULE_CONTENT_HEADER_BANNERS_ROTATOR_GROUPS)) {
-        $banner_query = tep_db_query("SELECT a.*, ai.* 
-                                      FROM 
-                                        (SELECT * 
-                                         FROM advert 
-                                         WHERE status = '1' 
-                                         AND advert_group IN (" . MODULE_CONTENT_HEADER_BANNERS_ROTATOR_GROUPS . ") 
-                                         ORDER BY rand()) a 
-                                         LEFT JOIN advert_info ai ON a.advert_id = ai.advert_id AND ai.languages_id = " . (int)$_SESSION['languages_id']
-                                      . " GROUP BY advert_group");
+          $rotatorgroup = MODULE_CONTENT_HEADER_BANNERS_ROTATOR_GROUPS;
+          $sql=<<<sql
+    SELECT a.*, ai.*  
+    FROM advert a
+    LEFT JOIN advert_info ai ON a.advert_id = ai.advert_id
+    WHERE a.status = '1'  
+    and ai.languages_id={$_SESSION['languages_id']} 
+    AND a.advert_group IN ($rotatorgroup) 
+    ORDER BY a.sort_order;                  
+sql;                  
+        $banner_query = tep_db_query($sql);
 
         if (tep_db_num_rows($banner_query) > 0) {
       

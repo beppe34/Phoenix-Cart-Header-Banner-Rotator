@@ -1,30 +1,37 @@
 <div id="header_banner_rotator" class="row col-sm-<?= $content_width ?> cm-header-banners text-center align-self-center">
+  <div id="banner_rotator" class="carousel slide" data-ride="carousel">
  <?php
+  $slideindex=0;
   while ($banner_values = tep_db_fetch_array($banner_query)) {
-    echo '<div class="cm-header-banners col-sm-' . MODULE_CONTENT_HEADER_BANNERS_ROTATOR_BANNER_WIDTH . '" style="margin-bottom:20px;">';
-    if (tep_not_null($banner_values['advert_html_text'])) {
-      echo $banner_values['advert_html_text'];
-    } else {
-      if (tep_not_null($banner_values['advert_url'])) {
-        echo '<a href="' . tep_href_link($banner_values['advert_url'], $banner_values['advert_fragment']) . '" target="_blank" rel="noopener">' . tep_image('images/' . $banner_values['advert_image'], htmlspecialchars($banner_values['advert_title'])) . '</a>';
-      } else {
-        echo tep_image('images/' . $banner_values['advert_image'], htmlspecialchars($banner_values['advert_title']));              
-      }
-    }
-    echo '</div>';
+      //indicators
+      $indicators[] = '<li data-target="#banner_rotator" data-slide-to="' . $slideindex . '" class="active"></li>';
+      $im = tep_image('images/' . $banner_values['advert_image'], htmlspecialchars($banner_values['advert_title']));
+      $ac = $slideindex==0?'active':'';
+      $items[] = <<<item
+    <div class="carousel-item $ac">
+       $im
+    </div>
+item;
+      $slideindex++;
   }
  ?>
+      
+  <!-- Indicators -->
+  <ul class="carousel-indicators">
+      <?php echo implode(PHP_EOL, $indicators); ?>
+  </ul>
+  <?php echo implode(PHP_EOL, $items); ?>
+  
+  <!-- Left and right controls -->
+  <a class="carousel-control-prev" href="#banner_rotator" data-slide="prev">
+    <span class="carousel-control-prev-icon"></span>
+  </a>
+  <a class="carousel-control-next" href="#banner_rotator" data-slide="next">
+    <span class="carousel-control-next-icon"></span>
+  </a>
+  </div>
 </div>
 
 <?php
 /*
-  osCommerce, Open Source E-Commerce Solutions
-  http://www.oscommerce.com
-
-  banner modules 2.1
-  by @raiwa 
-  info@oscaddons.com
-  www.oscaddons.com
-
-  Copyright (c) 2020 Rainer Schmied
 */
